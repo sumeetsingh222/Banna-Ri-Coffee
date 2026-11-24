@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BANNA RI COFFEE</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6fb;color:#172b50;font-family:Arial,sans-serif}
+header{text-align:center;background:#102d66;color:white;padding:25px 12px;border-bottom:4px solid #d8b45c}
+.logo{width:150px;height:150px;object-fit:contain;background:white;border-radius:50%;border:4px solid #d8b45c}
+h1{font-family:Georgia,serif;margin:12px 0 5px}
+header p{color:#f5d98d;letter-spacing:2px}
+main{max-width:700px;margin:auto;padding:15px}
+input{width:100%;padding:13px;border:1px solid #ccd6e6;border-radius:10px;margin:8px 0}
+section{background:white;border-radius:12px;padding:14px;margin:12px 0}
+h2{color:#102d66;font-family:Georgia,serif}
+.item{display:flex;align-items:center;gap:8px;border-top:1px solid #eee;padding:11px 0}
+.name{flex:1;font-weight:bold}
+.price{font-weight:bold}
+button{background:#102d66;color:white;border:0;border-radius:8px;padding:9px 12px}
+#cart{background:white;padding:15px;border-radius:12px;margin:15px 0}
+footer{text-align:center;padding:25px;color:#667}
+</style>
+</head>
+<body>
+<header>
+<img class="logo" src="/IMG-20260321-WA0012.jpg" alt="BANNA RI COFFEE Logo">
+<h1>BANNA RI COFFEE</h1>
+<p>THE SYMBOL OF ROYALITY</p>
+<b>MOT • MARWADI ON TOP</b>
+</header>
+<main>
+<h3>👑 Welcome to BANNA RI COFFEE</h3>
+<p>Choose your favourites and order directly on WhatsApp.</p>
+<input id="search" placeholder="Search menu..." oninput="draw()">
+<div id="menu"></div>
+<div id="cart">
+<h2>Your Order</h2>
+<div id="orders">No items added yet.</div>
+<p id="total">Total: ₹0</p>
+<input id="customer" placeholder="Your name">
+<input id="table" placeholder="Table number (optional)">
+<input id="notes" placeholder="Special instructions">
+<button onclick="send()">Order on WhatsApp</button>
+</div>
+</main>
+<footer>
+3 N 3, Sector 3, Kudi Bhagtasani, Near Ayush Hospital<br>
+Jodhpur, Rajasthan 342005<br>
++91 8690031102
+</footer>
+<script>
+const menu={
+"French Fries":[["Classic Regular",69],["Peri Peri",89],["Cheese Fries",109],["Chocolate Fries",129]],
+"Burgers":[["Classic Regular",59],["Tikki Burger",69],["Tandoori Burger",89],["Peri Peri Burger",89],["Cheese Burger",99],["Sweet Corn Burger",99]],
+"Pizza":[["Onion Capsicum Pizza",119],["Margherita Pizza",129],["Sweet Corn Pizza",149],["Vegetable Pizza",139],["Italian Pizza",199],["Paneer Pizza",199]],
+"Cold Coffee":[["Classic Regular",79],["Hazelnut",99],["Caramel",99],["Popcorn",119],["Chocolate",109],["Butterscotch",129]],
+"Thick Shakes":[["Pineapple Shakes",119],["Strawberry Shakes",119],["Blueberry Shakes",199],["Black Current Shakes",199],["Oreo Shakes",209],["Kit-kat Shakes",209],["Brownie Shakes",239]],
+"Jumbo Sandwich":[["Veg Sandwich",129],["Cheese Sandwich",169],["Peri Peri Sandwich",159],["Tandoori Sandwich",169],["Paneer Sandwich",199]],
+"Wrap Roll":[["Veg Roll",99],["Onion Capsicum Roll",109],["Paneer Roll",119],["Classic Mint Roll",119],["Schezwan Roll",129]],
+"Tiramisu & Cake":[["Death by Chocolate",129],["Classic",139],["Choco Misu",139],["Mango Misu",159],["Blueberry",149],["Red Velvet Cake",129]],
+"Beverages":[["Chatpata Guava",99],["Cucumber Citrus",99],["Muskeera",99],["Ruby Kokum",99],["Watermelon Panna",99],["Keri Panna",99]],
+"Ice Coffee":[["Cold Brew",199],["Matcha Latte",209],["Coconut Mocha",229],["Iced Latte",169],["Vietnamese Coffee",239]],
+"Hot Coffee":[["Black Coffee",49],["Americano",149],["Macchiato",199],["Cappuccino",199]],
+"Cold Drinks":[["Sprite Can",99],["Coke Can",99],["Red Bull Can",179],["Monster Can",179]],
+"Water Bottle":[["500 ml",49],["1L",99]]
+};
+let cart={};
+function draw(){
+let q=document.getElementById("search").value.toLowerCase();
+document.getElementById("menu").innerHTML="";
+for(let [cat,items] of Object.entries(menu)){
+let filtered=items.filter(x=>x[0].toLowerCase().includes(q));
+if(!filtered.length)continue;
+let s=document.createElement("section");
+s.innerHTML="<h2>"+cat+"</h2>";
+filtered.forEach(([n,p])=>{
+let d=document.createElement("div");
+d.className="item";
+let name=document.createElement("span");name.className="name";name.textContent=n;
+let price=document.createElement("span");price.className="price";price.textContent="₹"+p;
+let b=document.createElement("button");b.textContent="Add +";b.onclick=()=>add(n,p);
+d.append(name,price,b);s.append(d);
+});
+document.getElementById("menu").append(s);
+}
+}
+function add(n,p){if(!cart[n])cart[n]={p,q:0};cart[n].q++;update()}
+function update(){
+let total=0,html="";
+for(let [n,x] of Object.entries(cart)){
+total+=x.p*x.q;
+html+=n+" × "+x.q+" — ₹"+(x.p*x.q)+"<br>";
+}
+document.getElementById("orders").innerHTML=html||"No items added yet.";
+document.getElementById("total").textContent="Total: ₹"+total;
+}
+function send(){
+if(!Object.keys(cart).length)return alert("Please add items first");
+let name=document.getElementById("customer").value.trim();
+if(!name)return alert("Please enter your name");
+let msg="Hello BANNA RI COFFEE! My name is "+name+".\nOrder:\n";
+for(let [n,x] of Object.entries(cart))msg+=n+" x "+x.q+" = ₹"+(x.p*x.q)+"\n";
+msg+="Total: ₹"+Object.values(cart).reduce((a,x)=>a+x.p*x.q,0);
+let table=document.getElementById("table").value;
+let notes=document.getElementById("notes").value;
+if(table)msg+="\nTable: "+table;
+if(notes)msg+="\nNotes: "+notes;
+location.href="https://wa.me/918690031102?text="+encodeURIComponent(msg);
+}
+draw();
+</script>
+</body>
+</html>
